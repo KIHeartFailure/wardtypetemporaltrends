@@ -1,0 +1,122 @@
+```{r tab1, cache=TRUE}
+
+funcTab1 <- function(data, tabname) {
+  tab1 <- print(
+    CreateTableOne(
+      vars = tabvars,
+      data = data,
+      strata = c("clinic", "indexYear_cat")
+    ),
+    missing = TRUE,
+    printToggle = FALSE,
+    nonnormal = tabvars,
+    test = FALSE,
+    catDigits = 1,
+    contDigits = 1,
+    explain = FALSE,
+    noSpaces = TRUE
+  )
+  tab1 <- as_tibble(cbind(Variable = rownames(tab1), tab1)) %>%
+    select(Variable, Missing, `cardiology:2000-2004`:`medicine:2013-2016`)
+
+  # p for cardio
+  tab1_cardio <- print(
+    CreateTableOne(
+      vars = tabvars,
+      data = data %>% filter(clinic == "cardiology"),
+      strata = c("indexYear_cat")
+    ),
+    missing = FALSE,
+    printToggle = FALSE,
+    nonnormal = tabvars,
+    test = TRUE,
+    catDigits = 1,
+    contDigits = 1,
+    explain = FALSE,
+    noSpaces = TRUE
+  )
+  tab1_cardio <- as_tibble(cbind(Variable = rownames(tab1_cardio), tab1_cardio)) %>%
+    select(Variable, p)
+
+  # p for medicine
+  tab1_med <- print(
+    CreateTableOne(
+      vars = tabvars,
+      data = data %>% filter(clinic == "medicine"),
+      strata = c("indexYear_cat")
+    ),
+    missing = FALSE,
+    printToggle = FALSE,
+    nonnormal = tabvars,
+    test = TRUE,
+    catDigits = 1,
+    contDigits = 1,
+    explain = FALSE,
+    noSpaces = TRUE
+  )
+  tab1_med <- as_tibble(cbind(Variable = rownames(tab1_med), tab1_med)) %>%
+    select(Variable, p)
+
+  # all together now
+
+  tab1all <- Reduce(
+    function(...) {
+      full_join(...,
+        by = "Variable"
+      )
+    },
+    list(tab1, tab1_cardio, tab1_med)
+  )
+
+
+  tab1all <- tab1all %>%
+    mutate(
+      # remove = 1
+      across(everything(), str_replace_all, fixed(" = yes"), ""),
+
+      # so no probs
+      Variable = sanitize_text(Variable),
+      # space in Latex output (fix this other way?)
+      Variable = sub("  ", ". ", Variable)
+    )
+
+  colnames(tab1all) <- sanitize_text(c(
+    "Variables", "Missing (%)", rep(c("cardiology", "non-cardiology"), 5)))
+  
+  write.xlsx(tab1all, paste0("./output/tabs/tab1_", tabname, "_", Sys.Date(), ".xlsx"), rowNames = FALSE)
+
+  ## add footnote about ras (arb, aceir, arni)
+  tab1all$Variables <- ifelse(str_detect(tab1all$Variables, "ras"),
+    paste0(tab1all$Variables, footnote_marker_symbol(1)), tab1all$Variables
+  )
+
+  footnote(
+    default_kable(tab1all,
+      font_size = 3,
+      caption = paste0("Baseline characteristics - ", tabname),
+      longtable = TRUE,
+      escape = FALSE
+    ) %>%
+      landscape() %>%
+    add_header_above(c(" " = 1, " " = 1, "2000-2004" = 2, "2005-2008" = 2, "2009-2012" = 2, "2013-2016" = 2, "p-value" = 2)),
+    general = c(
+      "Categorical variables are presented with n (%) and tested with chi-square test and continous variables with median [q1-q3] and tested with Mann-Whitney U test."
+    ),
+    symbol = c(
+      "arb/acei/arni"
+    )
+  ) 
+}
+```
+
+```{r tab1overall, cache=TRUE, dependson="tab1"}
+funcTab1(data = wdata, tabname = "Overall")
+```
+
+```{r tab1in, cache=TRUE, dependson="tab1"}
+funcTab1(data = wdata %>% filter(location == "in-patient"), "In-patient")
+```
+
+```{r tab1out, cache=TRUE, dependson="tab1"}
+funcTab1(data = wdata %>% filter(location == "out-patient"), "Out-patient")
+```

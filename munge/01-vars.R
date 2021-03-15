@@ -1,0 +1,22 @@
+tabvars <- c(
+  "gender", "age", "age_cat", "location",
+  "indexYear_cat", "scb.marital.status_cat",
+  "scb.education_cat", "scb.dispinc", "scb.dispinc_cat",
+  "bmi", "bmi_cat", "durationHF", "nyha", "EF",
+  "bp.sys", "bp.sys_cat", "bp.dia", "heartRate", "heartRate_cat",
+  "smoking",
+  "d_Atrial_fib_flutter",
+  "d_Diabetes",
+  "d_Hypertension",
+  "com_COPD",
+  "com_stroke_tia",
+  "d_IHD",
+  "d_Valvedisease",
+  "com_cancer",
+  "com_liver",
+  "device_cat",
+  "hb", "hb_cat", "GFR", "GFR_cat", "ntProBNP", "ntProBNP_cat",
+  "betaBlocker", "ras", "MRA", "diuretics", "digoxin", "statins", "nitrates",
+  "asaTRC", "anticoagulantia",
+  "followUp.HF", "followUp.location"
+)
