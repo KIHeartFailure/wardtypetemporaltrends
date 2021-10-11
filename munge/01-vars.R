@@ -1,5 +1,5 @@
 tabvars <- c(
-  "gender", "age", "age_cat", "location",
+  "gender", "age", "age_cat", 
   "indexYear_cat", "scb.marital.status_cat",
   "scb.education_cat", "scb.dispinc", "scb.dispinc_cat",
   "bmi", "bmi_cat", "durationHF", "nyha", "EF",

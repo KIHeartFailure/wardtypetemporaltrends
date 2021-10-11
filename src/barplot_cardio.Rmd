@@ -1,59 +1,9 @@
 
 <!-- within EF group --> 
 
-```{r baroverallef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group - Overall"}
+```{r barinef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group"}
 
 percentageclinic <- wdata %>%
-  group_by(indexYear_cat, EF) %>%
-  count(clinic) %>%
-  mutate(freq = (n / sum(n)) * 100) %>%
-  ungroup() %>%
-  mutate(EFyear = factor(paste(indexYear_cat, EF),
-    levels = paste(rep(levels(wdata$indexYear_cat), each = 3), c("rEF", "mrEF", "pEF"))
-  ))
-
-ggplot(
-  percentageclinic,
-  aes(x = EFyear, y = freq, fill = clinic)
-) +
-  geom_col() +
-  # theme(axis.text.x=element_text(angle=90, hjust=1)) ## for checking
-  annotate(geom = "text", x = 1:12, y = -5, label = rep(c("HFrEF", "HFmrEF", "HFpEF"), 4), size = 2.5) +
-  annotate(geom = "text", x = c(2, 5, 8, 11), y = -11, label = unique(percentageclinic$indexYear_cat), size = 4) +
-  scale_fill_manual("Ward type", values = global_kicols) +
-  theme_minimal() +
-  ylab("Percent") +
-  theme(
-    # legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank()
-  )
-```
-
-```{r baroveralleftab}
-default_kable(percentageclinic %>%
-  mutate(percent = paste0(fn(freq, dig = 1), "%")) %>%
-  select(indexYear_cat, EF, clinic, percent) %>%
-  pivot_wider(names_from = EF, values_from = percent) %>%
-  rename(
-    Year = indexYear_cat,
-    Wardtype = clinic
-  ),
-caption = "Temporal trend in percentage of admissions to wardtype within LVEF group - Overall",
-scale_down = FALSE
-)
-```
-
-\newpage
-\clearpage
-
-```{r barinef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group - In-patient"}
-
-percentageclinic <- wdata %>%
-  filter(location == "in-patient") %>%
   group_by(indexYear_cat, EF) %>%
   count(clinic) %>%
   mutate(freq = (n / sum(n)) * 100) %>%
@@ -92,57 +42,7 @@ default_kable(percentageclinic %>%
     Year = indexYear_cat,
     Wardtype = clinic
   ),
-caption = "Temporal trend in percentage of admissions to wardtype within LVEF group - In-patient",
-scale_down = FALSE
-)
-```
-
-\newpage
-\clearpage
-
-```{r baroutef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group - Out-patient"}
-
-percentageclinic <- wdata %>%
-  filter(location == "out-patient") %>%
-  group_by(indexYear_cat, EF) %>%
-  count(clinic) %>%
-  mutate(freq = (n / sum(n)) * 100) %>%
-  ungroup() %>%
-  mutate(EFyear = factor(paste(indexYear_cat, EF),
-    levels = paste(rep(levels(wdata$indexYear_cat), each = 3), c("rEF", "mrEF", "pEF"))
-  ))
-
-ggplot(
-  percentageclinic,
-  aes(x = EFyear, y = freq, fill = clinic)
-) +
-  geom_col() +
-  # theme(axis.text.x=element_text(angle=90, hjust=1)) ## for checking
-  annotate(geom = "text", x = 1:12, y = -5, label = rep(c("HFrEF", "HFmrEF", "HFpEF"), 4), size = 2.5) +
-  annotate(geom = "text", x = c(2, 5, 8, 11), y = -11, label = unique(percentageclinic$indexYear_cat), size = 4) +
-  scale_fill_manual("Ward type", values = global_kicols) +
-  theme_minimal() +
-  ylab("Percent") +
-  theme(
-    # legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank()
-  )
-```
-
-```{r barouteftab}
-default_kable(percentageclinic %>%
-  mutate(percent = paste0(fn(freq, dig = 1), "%")) %>%
-  select(indexYear_cat, EF, clinic, percent) %>%
-  pivot_wider(names_from = EF, values_from = percent) %>%
-  rename(
-    Year = indexYear_cat,
-    Wardtype = clinic
-  ),
-caption = "Temporal trend in percentage of admissions to wardtype within LVEF group - Out-patient",
+caption = "Temporal trend in percentage of admissions to wardtype within LVEF group",
 scale_down = FALSE
 )
 ```
@@ -151,61 +51,9 @@ scale_down = FALSE
 \clearpage
 <!-- within ward --> 
 
-
-```{r baroverallward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype - Overall"}
-
-percentageclinic <- wdata %>%
-  mutate(EF = factor(EF, levels = c("pEF", "mrEF", "rEF"))) %>%
-  group_by(indexYear_cat, clinic) %>%
-  count(EF) %>%
-  mutate(freq = (n / sum(n)) * 100) %>%
-  ungroup() %>%
-  mutate(clinicyear = factor(paste(indexYear_cat, clinic),
-    levels = paste(rep(levels(wdata$indexYear_cat), each = 2), c("cardiology", "medicine"))
-  ))
-
-ggplot(
-  percentageclinic,
-  aes(x = clinicyear, y = freq, fill = EF)
-) +
-  geom_col() +
-  # theme(axis.text.x=element_text(angle=90, hjust=1)) ## for checking
-  annotate(geom = "text", x = 1:8, y = -5, label = rep(c("cardiology", "non-cardiology"), 4), size = 2.5) +
-  annotate(geom = "text", x = c(1.5, 3.5, 5.5, 7.5), y = -11, label = unique(percentageclinic$indexYear_cat), size = 4) +
-  scale_fill_manual("LVEF", values = global_kicols) +
-  theme_minimal() +
-  ylab("Percent") +
-  theme(
-    # legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank()
-  )
-```
-
-```{r baroverallwardtab}
-default_kable(percentageclinic %>%
-  mutate(percent = paste0(fn(freq, dig = 1), "%")) %>%
-  select(indexYear_cat, EF, clinic, percent) %>%
-  pivot_wider(names_from = clinic, values_from = percent) %>%
-  rename(
-    Year = indexYear_cat,
-    `non-cardiology` = medicine
-  ),
-caption = "Temporal trend in percentage of admissions by LVEF group within wardtype - Overall",
-scale_down = FALSE
-)
-```
-
-\newpage
-\clearpage
-
-```{r barinward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype - In-patient"}
+```{r barinward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype"}
 
 percentageclinic <- wdata %>%
-  filter(location == "in-patient") %>%
   mutate(EF = factor(EF, levels = c("pEF", "mrEF", "rEF"))) %>%
   group_by(indexYear_cat, clinic) %>%
   count(EF) %>%
@@ -245,58 +93,7 @@ default_kable(percentageclinic %>%
     Year = indexYear_cat,
     `non-cardiology` = medicine
   ),
-caption = "Temporal trend in percentage of admissions by LVEF group within wardtype - In-patients",
-scale_down = FALSE
-)
-```
-
-\newpage
-\clearpage
-
-```{r baroutward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype - Out-patient"}
-
-percentageclinic <- wdata %>%
-  filter(location == "out-patient") %>%
-  mutate(EF = factor(EF, levels = c("pEF", "mrEF", "rEF"))) %>%
-  group_by(indexYear_cat, clinic) %>%
-  count(EF) %>%
-  mutate(freq = (n / sum(n)) * 100) %>%
-  ungroup() %>%
-  mutate(clinicyear = factor(paste(indexYear_cat, clinic),
-    levels = paste(rep(levels(wdata$indexYear_cat), each = 2), c("cardiology", "medicine"))
-  ))
-
-ggplot(
-  percentageclinic,
-  aes(x = clinicyear, y = freq, fill = EF)
-) +
-  geom_col() +
-  # theme(axis.text.x=element_text(angle=90, hjust=1)) ## for checking
-  annotate(geom = "text", x = 1:8, y = -5, label = rep(c("cardiology", "non-cardiology"), 4), size = 2.5) +
-  annotate(geom = "text", x = c(1.5, 3.5, 5.5, 7.5), y = -11, label = unique(percentageclinic$indexYear_cat), size = 4) +
-  scale_fill_manual("LVEF", values = global_kicols) +
-  theme_minimal() +
-  ylab("Percent") +
-  theme(
-    # legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank()
-  )
-```
-
-```{r baroutwardtab}
-default_kable(percentageclinic %>%
-  mutate(percent = paste0(fn(freq, dig = 1), "%")) %>%
-  select(indexYear_cat, EF, clinic, percent) %>%
-  pivot_wider(names_from = clinic, values_from = percent) %>%
-  rename(
-    Year = indexYear_cat,
-    `non-cardiology` = medicine
-  ),
-caption = "Temporal trend in percentage of admissions by LVEF group within wardtype - Out-patients",
+caption = "Temporal trend in percentage of admissions by LVEF group within wardtype",
 scale_down = FALSE
 )
 ```
