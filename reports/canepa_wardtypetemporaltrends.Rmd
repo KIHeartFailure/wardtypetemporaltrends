@@ -126,13 +126,16 @@ The median age (IQR) is `r wdata %>% summarise(med = fn(median(age), dig = 1),
 
 All analyses were performed using `r sessionInfo()$R.version$version.string` [@r]. 
 The level of significance is set to 5%, two-sided. No adjustment for multiple 
-comparisons were made and therefore the results should be viewed with some care.
+comparisons were made and therefore the results should be viewed with care.
 
 ## Time plot
 
 ```{r, child = "../src/barplot_cardio.Rmd"}
 
 ```
+
+\clearpage
+\newpage
 
 ## Baseline characteristics
 

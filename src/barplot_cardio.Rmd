@@ -47,6 +47,9 @@ scale_down = FALSE
 )
 ```
 
+\newpage
+\clearpage
+
 ```{r barinef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group - In-patient"}
 
 percentageclinic <- wdata %>%
@@ -93,6 +96,9 @@ caption = "Temporal trend in percentage of admissions to wardtype within LVEF gr
 scale_down = FALSE
 )
 ```
+
+\newpage
+\clearpage
 
 ```{r baroutef, fig.cap = "Temporal trend in percentage of admissions to wardtype within LVEF group - Out-patient"}
 
@@ -141,6 +147,8 @@ scale_down = FALSE
 )
 ```
 
+\newpage
+\clearpage
 <!-- within ward --> 
 
 
@@ -191,6 +199,9 @@ scale_down = FALSE
 )
 ```
 
+\newpage
+\clearpage
+
 ```{r barinward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype - In-patient"}
 
 percentageclinic <- wdata %>%
@@ -238,6 +249,9 @@ caption = "Temporal trend in percentage of admissions by LVEF group within wardt
 scale_down = FALSE
 )
 ```
+
+\newpage
+\clearpage
 
 ```{r baroutward, fig.cap = "Temporal trend in percentage of admissions by LVEF group within wardtype - Out-patient"}
 
