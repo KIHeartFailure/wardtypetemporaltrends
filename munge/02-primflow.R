@@ -4,7 +4,7 @@
 
 flow <- c("Number of posts in SwedeHF", paste0(nrow(rs.data6), " (", nrow(rs.data6 %>% group_by(lopnr) %>% slice(1) %>% ungroup()), ")"), NA, NA, NA)
 
-wdata <- rs.data6 %>%
+wdata <- rs.data6edtm %>%
   mutate(koll = ifelse(location == "in-patient", "yes", "no"))
 flowtabFunc("Exclude out-patients", byclin = FALSE)
 

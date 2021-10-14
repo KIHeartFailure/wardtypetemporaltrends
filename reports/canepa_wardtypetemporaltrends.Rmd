@@ -143,6 +143,12 @@ comparisons were made and therefore the results should be viewed with care.
 
 ```
 
+### Time from date of EF to index
+
+```{r, child = "../src/efdate.Rmd"}
+
+```
+
 \clearpage
 \newpage
 

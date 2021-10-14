@@ -1,12 +1,26 @@
 
-ProjectTemplate::load.project(list(munging = FALSE, data_loading = FALSE))
+ProjectTemplate::reload.project(data_loading = T)
 
-# Import data from XXX ----------------------------------------------------
+memory.limit(size = 10000000000000)
 
+# Import data from UCR and add EKO date ----------------------------------------
 
-# Fix encoding ------------------------------------------------------------
+ucrpath <- "C:/Users/Lina/STATISTIK/Projects/20190429_Dataset RS Bodil/raw-data/UT2_7403_2017/"
 
+oldrs <- read_sasdata(path = ucrpath, filename = "ucr_bas_7403_2017")
 
-# Store as RData in /data folder ------------------------------------------
+oldrsedtm <- oldrs %>%
+  mutate(date = coalesce(DTMUT, DTMIN)) %>%
+  select(lopnr, date, EKODATE) %>%
+  group_by(lopnr, date) %>%
+  arrange(EKODATE) %>%
+  slice(1) %>%
+  ungroup()
 
-save(file = "./data/rawData.RData", list = c("X"))
+rs.data6edtm <- left_join(rs.data6, 
+                          oldrsedtm, 
+                          by = c("lopnr", "date"))
+
+save(file = "./data/rs.data6edtm.RData",
+     list = c("rs.data6edtm")
+)

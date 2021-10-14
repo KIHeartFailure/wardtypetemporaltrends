@@ -1,0 +1,34 @@
+```{r efdate, cache=TRUE}
+
+
+wdataedtm <- wdata %>%
+  mutate(eftime = as.numeric(date - EKODATE)) %>%
+  select(lvef, clinic, eftime)
+
+wdataedtmoverall <- wdataedtm %>%
+  summarise(Pmiss = paste0(fn(sum(is.na(eftime)) / n() * 100, 1), "%"), 
+            med = fn(median(eftime, na.rm = T), 1), 
+            q1 = fn(quantile(eftime, na.rm = TRUE, probs = 0.25), dig = 1), 
+            q3 = fn(quantile(eftime, na.rm = TRUE, probs = 0.75), dig = 1), 
+            medq = paste0(med, " (", q1, "-", q3, ")"), 
+            clinic = "Overall")
+
+wdataedtmward <- wdataedtm %>%
+  group_by(clinic) %>%
+  summarise(Pmiss = paste0(fn(sum(is.na(eftime)) / n() * 100, 1), "%"), 
+            med = fn(median(eftime, na.rm = T), 1), 
+            q1 = fn(quantile(eftime, na.rm = TRUE, probs = 0.25), dig = 1), 
+            q3 = fn(quantile(eftime, na.rm = TRUE, probs = 0.75), dig = 1), 
+            medq = paste0(med, " (", q1, "-", q3, ")")) %>%
+  ungroup()
+
+wdataedtmall <- bind_rows(wdataedtmoverall, wdataedtmward) %>%
+  select(clinic, Pmiss, medq)
+
+colnames(wdataedtmall) <- c("Patient group", "Missing EF date (%)", "Median (q1-q3)")
+
+default_kable(wdataedtmall,
+      caption = "Time from EF to index date (days)", 
+      scale_down = F
+    ) 
+```

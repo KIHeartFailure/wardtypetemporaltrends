@@ -188,7 +188,7 @@ footnote(
     landscape() %>%
     add_header_above(c(" " = 1, " " = 1, "2000-2004" = 3, "2005-2008" = 3, "2009-2012" = 3, "2013-2016" = 3, "Overall p-value" = 2)),
   general = c(
-    "Categorical variables are presented with n (%) and tested with chi-square test and continous variables with median [q1-q3] and tested with Mann-Whitney U test."
+    "Categorical variables are presented with n (%) and tested with chi-square test and continous variables with median [q1-q3] and tested with Kruskal-Wallis test."
   ),
   symbol = c(
     "arb/acei/arni"
