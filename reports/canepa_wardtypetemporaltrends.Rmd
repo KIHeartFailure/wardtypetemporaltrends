@@ -143,6 +143,14 @@ comparisons were made and therefore the results should be viewed with care.
 
 ```
 
+## Additional p-values
+
+A chi-square test between time period and ward type for each EF group seperatly was also performed. 
+
+```{r, child = "../src/cardiotimebyEF.Rmd"}
+
+```
+
 ### Time from date of EF to index
 
 ```{r, child = "../src/efdate.Rmd"}
