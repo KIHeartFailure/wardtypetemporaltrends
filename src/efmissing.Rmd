@@ -1,0 +1,201 @@
+```{r efmissing, cache=TRUE}
+
+checkefmissing <- checkefmissing %>%
+  mutate(
+    indexYear = as.numeric(indexYear),
+    indexYear_cat = case_when(
+      indexYear <= 2004 ~ "2000-2004",
+      indexYear <= 2008 ~ "2005-2008",
+      indexYear <= 2012 ~ "2009-2012",
+      indexYear <= 2016 ~ "2013-2016"
+    ),
+    efavailable = factor(if_else(!is.na(EF), 1, 0), levels = 0:1, labels = c("no", "yes"))
+  )
+
+tab1 <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing,
+    strata = c("clinic", "indexYear_cat")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = FALSE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab1 <- as_tibble(cbind(Variable = rownames(tab1), tab1)) %>%
+  select(Variable, `cardiology:2000-2004`:`medicine:2013-2016`)
+
+# p for 2000-2004
+tab2000 <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(indexYear_cat == "2000-2004"),
+    strata = c("clinic")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab2000 <- as_tibble(cbind(Variable = rownames(tab2000), tab2000)) %>%
+  select(Variable, p) %>%
+  rename(p2000 = p)
+
+# p for 2005-2008
+tab2005 <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(indexYear_cat == "2005-2008"),
+    strata = c("clinic")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab2005 <- as_tibble(cbind(Variable = rownames(tab2005), tab2005)) %>%
+  select(Variable, p) %>%
+  rename(p2005 = p)
+
+# p for 2009-2012
+tab2009 <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(indexYear_cat == "2009-2012"),
+    strata = c("clinic")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab2009 <- as_tibble(cbind(Variable = rownames(tab2009), tab2009)) %>%
+  select(Variable, p) %>%
+  rename(p2009 = p)
+
+# p for 2013-2016
+tab2013 <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(indexYear_cat == "2013-2016"),
+    strata = c("clinic")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab2013 <- as_tibble(cbind(Variable = rownames(tab2013), tab2013)) %>%
+  select(Variable, p) %>%
+  rename(p2013 = p)
+
+
+# p for cardio
+tab1_cardio <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(clinic == "cardiology"),
+    strata = c("indexYear_cat")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab1_cardio <- as_tibble(cbind(Variable = rownames(tab1_cardio), tab1_cardio)) %>%
+  select(Variable, p)
+
+# p for medicine
+tab1_med <- print(
+  CreateTableOne(
+    vars = "efavailable",
+    data = checkefmissing %>% filter(clinic == "medicine"),
+    strata = c("indexYear_cat")
+  ),
+  missing = FALSE,
+  printToggle = FALSE,
+  nonnormal = tabvars,
+  test = TRUE,
+  catDigits = 1,
+  contDigits = 1,
+  explain = FALSE,
+  noSpaces = TRUE
+)
+tab1_med <- as_tibble(cbind(Variable = rownames(tab1_med), tab1_med)) %>%
+  select(Variable, p)
+
+# all together now
+
+tab1all <- Reduce(
+  function(...) {
+    full_join(...,
+      by = "Variable"
+    )
+  },
+  list(tab1, tab2000, tab2005, tab2009, tab2013, tab1_cardio, tab1_med)
+) %>%
+  select(
+    "Variable",
+    "cardiology:2000-2004", "medicine:2000-2004", "p2000",
+    "cardiology:2005-2008", "medicine:2005-2008", "p2005",
+    "cardiology:2009-2012", "medicine:2009-2012", "p2009",
+    "cardiology:2013-2016", "medicine:2013-2016", "p2013",
+    "p.x", "p.y"
+  )
+
+tab1all <- tab1all %>%
+  mutate(
+    # remove = 1
+    across(everything(), str_replace_all, fixed(" = yes"), ""),
+
+    # so no probs
+    Variable = sanitize_text(Variable),
+    # space in Latex output (fix this other way?)
+    Variable = sub("  ", ". ", Variable)
+  )
+
+colnames(tab1all) <- sanitize_text(c(
+  "Variables", rep(c("cardiology", "non-cardiology", "p-value"), 4), "cardiology", "non-cardiology"
+))
+
+write.xlsx(tab1all, paste0("./output/tabs/tabefmissing_", Sys.Date(), ".xlsx"), rowNames = FALSE)
+
+footnote(
+  default_kable(tab1all,
+    font_size = 5,
+    caption = "EF missing (based on posts after step 3 in flowchart)",
+    longtable = TRUE,
+    escape = FALSE
+  ) %>%
+    landscape() %>%
+    add_header_above(c(" " = 1, "2000-2004" = 3, "2005-2008" = 3, "2009-2012" = 3, "2013-2016" = 3, "Overall p-value" = 2)),
+  general = c(
+    "Presented with n (%) and tested with chi-square test."
+  )
+)
+```

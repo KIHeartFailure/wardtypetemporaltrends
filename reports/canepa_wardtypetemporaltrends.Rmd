@@ -120,6 +120,11 @@ The median age (IQR) is `r wdata %>% summarise(med = fn(median(age), dig = 1),
   filter(gender == "Female") %>%
   pull(perc)`% females.    
 
+
+```{r, child = "../src/efmissing.Rmd"}
+
+```
+
 # Statistical analysis 
 
 ## General
@@ -143,9 +148,9 @@ comparisons were made and therefore the results should be viewed with care.
 
 ```
 
-## Additional p-values
+### Additional p-values
 
-A chi-square test between time period and ward type for each EF group seperatly was also performed. 
+A chi-square test for trend in proportions between time period and ward type for each EF group separately was also performed. 
 
 ```{r, child = "../src/cardiotimebyEF.Rmd"}
 

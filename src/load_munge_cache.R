@@ -12,4 +12,5 @@ ProjectTemplate::reload.project(
 
 ProjectTemplate::cache("flow")
 ProjectTemplate::cache("wdata")
+ProjectTemplate::cache("checkefmissing")
 ProjectTemplate::cache("tabvars")

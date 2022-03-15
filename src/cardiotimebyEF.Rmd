@@ -1,21 +1,41 @@
 
 ```{r cardiotimebyEF}
 
-tmp <- wdata %>% filter(EF == "rEF")
-pref <- chisq.test(tmp$indexYear_cat, tmp$clinic)
+tmp <- wdata %>%
+  filter(EF == "rEF") %>%
+  group_by(indexYear_cat) %>%
+  count(clinic) %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(clinic == "cardiology")
+pref <- prop.trend.test(tmp$n, tmp$tot)
 
-tmp <- wdata %>% filter(EF == "mrEF")
-pmref <- chisq.test(tmp$indexYear_cat, tmp$clinic)
 
-tmp <- wdata %>% filter(EF == "pEF")
-ppef <- chisq.test(tmp$indexYear_cat, tmp$clinic)
+tmp <- wdata %>%
+  filter(EF == "mrEF") %>%
+  group_by(indexYear_cat) %>%
+  count(clinic) %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(clinic == "cardiology")
+pmref <- prop.trend.test(tmp$n, tmp$tot)
+
+
+tmp <- wdata %>%
+  filter(EF == "pEF") %>%
+  group_by(indexYear_cat) %>%
+  count(clinic) %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(clinic == "cardiology")
+ppef <- prop.trend.test(tmp$n, tmp$tot)
 
 pall <- bind_cols(c("rEF", "mrEF", "pEF"), c(fn(pref$p.value, dig = 3, p = T), fn(pmref$p.value, dig = 3, p = T), fn(ppef$p.value, dig = 3, p = T)))
 
 colnames(pall) <- c("EF", "p-value")
 
 default_kable(pall,
-  caption = "Test between ward type and time period for each EF group seperatly",
+  caption = "Test for trend between ward type and time period for each EF group seperatly",
   scale_down = F
 )
 ```

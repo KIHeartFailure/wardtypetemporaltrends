@@ -96,6 +96,8 @@ wdata <- wdata %>%
       GFR < 60 ~ "<60",
       TRUE ~ ">=60"
     ),
+    #mis ntprobno
+    ntProBNPavailable = factor(if_else(!is.na(ntProBNP), 1, 0), levels = 0:1, labels = c("no", "yes")),
     ## comorbs
     ## AF
     d_Atrial_fib_flutter = case_when(
