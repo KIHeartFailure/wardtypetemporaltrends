@@ -35,7 +35,79 @@ pall <- bind_cols(c("rEF", "mrEF", "pEF"), c(fn(pref$p.value, dig = 3, p = T), f
 colnames(pall) <- c("EF", "p-value")
 
 default_kable(pall,
-  caption = "Test for trend between ward type and time period for each EF group seperatly",
+  caption = "Test for trend between ward type and time period for each EF group separatly",
+  scale_down = F
+)
+```
+
+```{r cardiotimebyEF2}
+
+# ref
+tmp <- wdata %>%
+  filter(clinic == "cardiology") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "rEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "rEF"`)
+prefcard <- prop.trend.test(tmp$n, tmp$tot)
+
+tmp <- wdata %>%
+  filter(clinic == "medicine") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "rEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "rEF"`)
+prefnoncard <- prop.trend.test(tmp$n, tmp$tot)
+
+# mref
+tmp <- wdata %>%
+  filter(clinic == "cardiology") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "mrEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "mrEF"`)
+pmrefcard <- prop.trend.test(tmp$n, tmp$tot)
+
+tmp <- wdata %>%
+  filter(clinic == "medicine") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "mrEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "mrEF"`)
+pmrefnoncard <- prop.trend.test(tmp$n, tmp$tot)
+
+# pef
+tmp <- wdata %>%
+  filter(clinic == "cardiology") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "pEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "pEF"`)
+ppefcard <- prop.trend.test(tmp$n, tmp$tot)
+
+tmp <- wdata %>%
+  filter(clinic == "medicine") %>%
+  group_by(indexYear_cat) %>%
+  count(EF == "pEF") %>%
+  mutate(tot = sum(n)) %>%
+  ungroup() %>%
+  filter(`EF == "pEF"`)
+ppefnoncard <- prop.trend.test(tmp$n, tmp$tot)
+
+
+pall <- bind_cols(c("rEF", "mrEF", "pEF"), 
+                  c(fn(prefcard$p.value, dig = 3, p = T), fn(pmrefcard$p.value, dig = 3, p = T), fn(ppefcard$p.value, dig = 3, p = T)), 
+                  c(fn(prefnoncard$p.value, dig = 3, p = T), fn(pmrefnoncard$p.value, dig = 3, p = T), fn(ppefnoncard$p.value, dig = 3, p = T)))
+
+colnames(pall) <- c("EF", "p-value cardiology", "p-value medicine")
+
+default_kable(pall,
+  caption = "Test for trend between EF groups for ward type separatly",
   scale_down = F
 )
 ```

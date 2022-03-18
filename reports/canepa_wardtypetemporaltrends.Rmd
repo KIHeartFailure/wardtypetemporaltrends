@@ -1,6 +1,5 @@
 ---
 title: 'Statistical report: Temporal trend of heart failure hospitalizations in cardiology vs. non-cardiology wards in Sweden: data from the SwedeHF registry'
-subtitle: 'DRAFT'
 author: 'Statistician: Lina Benson'
   
 date: "`r Sys.Date()`"
@@ -13,8 +12,6 @@ output:
 link-citations: yes
 bibliography: references.bib
 nocite: '@*'
-header-includes:
-   - \usepackage{draftwatermark}
 ---
 
 \newpage 
@@ -150,7 +147,7 @@ comparisons were made and therefore the results should be viewed with care.
 
 ### Additional p-values
 
-A chi-square test for trend in proportions between time period and ward type for each EF group separately was also performed. 
+A chi-square test for trend in proportions between time period and ward type and EF respectively was also performed. 
 
 ```{r, child = "../src/cardiotimebyEF.Rmd"}
 
