@@ -21,6 +21,20 @@ rs.data6edtm <- left_join(rs.data6,
                           oldrsedtm, 
                           by = c("lopnr", "date"))
 
-save(file = "./data/rs.data6edtm.RData",
-     list = c("rs.data6edtm")
+
+
+oldrsklinik <- oldrs %>%
+  mutate(date = coalesce(DTMUT, DTMIN)) %>%
+  select(lopnr, date, KLINIK) %>%
+  group_by(lopnr, date) %>%
+  arrange(KLINIK) %>%
+  slice(1) %>%
+  ungroup()
+
+rs.data6extra <- left_join(rs.data6edtm, 
+                          oldrsklinik, 
+                          by = c("lopnr", "date"))
+
+save(file = "./data/rs.data6extra.RData",
+     list = c("rs.data6extra")
 )

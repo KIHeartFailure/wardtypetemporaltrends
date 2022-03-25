@@ -33,6 +33,10 @@ wdata <- wdata %>%
       clinic == "cardiology" ~ 0,
       clinic == "medicine" ~ 1
     ),
+    clinic3 = case_when(KLINIK == 1 ~ "medicine", 
+                        KLINIK == 2 ~ "cardiology", 
+                        KLINIK == 3 ~ "geriatrics"
+                        ), 
     ras = case_when(
       is.na(ACEi) | is.na(arb) ~ NA_character_,
       ACEi == "yes" | arb == "yes" | arni == "yes" ~ "yes",
