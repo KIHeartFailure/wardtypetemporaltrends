@@ -1,11 +1,11 @@
-# R code for the project Temporal trend of heart failure hospitalizations in cardiology vs. non-cardiology wards in Sweden: data from the SwedeHF registry
+# R code for the project Temporal trends of heart failure hospitalizations in cardiology vs. non-cardiology wards according to ejection fraction: 16-year data from the SwedeHF registry
 
 The aim of this R code is to be transparent and document the data handling 
 and statistical analyses performed for the project.
 
 ## Language 
 
-English (sprinkled with Swedish). 
+English. 
 
 ## Data
 
@@ -31,4 +31,4 @@ reports/Statistical_report_XX.Rmd
 
 ## Publication
 
-... 
+https://pubmed.ncbi.nlm.nih.gov/35938444/
